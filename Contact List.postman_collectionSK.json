@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "90a63d4d-88f7-4035-82f3-d776e0353db3",
+		"name": "Contact List",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37302482",
+		"_collection_link": "https://bold-space-27356.postman.co/workspace/FSAE_DE_25~f8dfbffc-fbec-43eb-ab4b-4fe84f5c622d/collection/37302482-90a63d4d-88f7-4035-82f3-d776e0353db3?action=share&source=collection_link&creator=37302482"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"token\", pm.response.json().token);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"ondia25@gmail.com\",\n    \"password\": \"ondia123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/users/login",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'https://thinking-tester-contact-list.herokuapp.com/users/login' \\\n--data-raw '{\n    \"email\": \"test2@fake.com\",\n    \"password\": \"myNewPassword\"\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"contactId\", pm.response.json()._id);",
+							"",
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.code).to.eql(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response contains required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.all.keys('_id', 'firstName', 'lastName', 'birthdate', 'email', 'phone', 'street1', 'street2', 'city', 'stateProvince', 'postalCode', 'country', 'owner', '__v');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Email must be in a valid format\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.email).to.exist;",
+							"    pm.expect(responseData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email format is invalid\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Phone is in a valid format\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.phone).to.exist;",
+							"    pm.expect(responseData.phone).to.match(/^\\d{10}$/, \"Phone must be a 10-digit number without any special characters\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 1000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});",
+							"",
+							"var responseData = pm.response.json();",
+							"var requestData = {",
+							"    \"firstName\": \"Ahmet\",",
+							"    \"lastName\": \"Kaya\",",
+							"    \"birthdate\": \"1970-01-01\",",
+							"    \"email\": \"jdoe@fake.com\",",
+							"    \"phone\": \"8005555555\",",
+							"    \"street1\": \"1 Main St.\",",
+							"    \"street2\": \"Apartment A\",",
+							"    \"city\": \"Anytown\",",
+							"    \"stateProvince\": \"KS\",",
+							"    \"postalCode\": \"12345\",",
+							"    \"country\": \"USA\"",
+							"};",
+							"",
+							"// Test to verify that the response contains the same values as those sent in the request",
+							"pm.test(\"Response contains the same values as the request\", function () {",
+							"    pm.expect(responseData.firstName).to.eql(requestData.firstName);",
+							"    pm.expect(responseData.lastName).to.eql(requestData.lastName);",
+							"    pm.expect(responseData.birthdate).to.eql(requestData.birthdate);",
+							"    pm.expect(responseData.email).to.eql(requestData.email);",
+							"    pm.expect(responseData.phone).to.eql(requestData.phone);",
+							"    pm.expect(responseData.street1).to.eql(requestData.street1);",
+							"    pm.expect(responseData.street2).to.eql(requestData.street2);",
+							"    pm.expect(responseData.city).to.eql(requestData.city);",
+							"    pm.expect(responseData.stateProvince).to.eql(requestData.stateProvince);",
+							"    pm.expect(responseData.postalCode).to.eql(requestData.postalCode);",
+							"    pm.expect(responseData.country).to.eql(requestData.country);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Ahmet\",\n    \"lastName\": \"Kaya\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"jdoe@fake.com\",\n    \"phone\": \"8005555555\",\n    \"street1\": \"1 Main St.\",\n    \"street2\": \"Apartment A\",\n    \"city\": \"Anytown\",\n    \"stateProvince\": \"KS\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'https://thinking-tester-contact-list.herokuapp.com/contacts' \\\n--header 'Authorization: Bearer {{token}}' \\\n--data-raw '{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"jdoe@fake.com\",\n    \"phone\": \"8005555555\",\n    \"street1\": \"1 Main St.\",\n    \"street2\": \"Apartment A\",\n    \"city\": \"Anytown\",\n    \"stateProvince\": \"KS\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\"\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Contacts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						""
+					]
+				},
+				"description": "Generated from cURL: curl --location 'https://thinking-tester-contact-list.herokuapp.com/contacts/' \\\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Test Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contactId}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'https://thinking-tester-contact-list.herokuapp.com/contacts/' \\\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Amy\",\n    \"lastName\": \"Miller\",\n    \"birthdate\": \"1992-02-02\",\n    \"email\": \"amiller@fake.com\",\n    \"phone\": \"8005554242\",\n    \"street1\": \"13 School St.\",\n    \"street2\": \"Apt. 5\",\n    \"city\": \"Washington\",\n    \"stateProvince\": \"QC\",\n    \"postalCode\": \"A1B2E3\",\n    \"country\": \"Canada\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contactId}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request PUT 'https://thinking-tester-contact-list.herokuapp.com/contacts/' \\\n--header 'Authorization: Bearer {{token}}' \\\n--data-raw '{\n    \"firstName\": \"Amy\",\n    \"lastName\": \"Miller\",\n    \"birthdate\": \"1992-02-02\",\n    \"email\": \"amiller@fake.com\",\n    \"phone\": \"8005554242\",\n    \"street1\": \"13 School St.\",\n    \"street2\": \"Apt. 5\",\n    \"city\": \"Washington\",\n    \"stateProvince\": \"QC\",\n    \"postalCode\": \"A1B2D4\",\n    \"country\": \"Canada\"\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Partially Update Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Merve\",\n    \"city\": \"Kutahya\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contactId}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request PATCH 'https://thinking-tester-contact-list.herokuapp.com/contacts/' \\\n--header 'Authorization: Bearer {{token}}' \\\n--data '{\n    \"firstName\": \"Anna\"\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/{{contactId}}",
+					"protocol": "https",
+					"host": [
+						"thinking-tester-contact-list",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request DELETE 'https://thinking-tester-contact-list.herokuapp.com/contacts/' \\\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "contactId",
+			"value": ""
+		}
+	]
+}
